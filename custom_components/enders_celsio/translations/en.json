@@ -1,0 +1,46 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Enders Celsio",
+        "description": "Select a discovered Enders Celsio device or enter its Bluetooth MAC address manually.",
+        "data": {
+          "address": "Device",
+          "device_type": "Device Type"
+        }
+      },
+      "bluetooth_confirm": {
+        "title": "Discover Enders Celsio",
+        "description": "Do you want to add {name} ({address}) to Home Assistant?"
+      }
+    },
+    "abort": {
+      "already_configured": "Device is already configured",
+      "no_devices_found": "No Enders Celsio devices found nearby"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "meat_temperature": {
+        "name": "Meat temperature"
+      },
+      "ambient_temperature": {
+        "name": "Ambient temperature"
+      },
+      "battery": {
+        "name": "Battery"
+      },
+      "rssi": {
+        "name": "Signal strength"
+      }
+    },
+    "binary_sensor": {
+      "ambient_low": {
+        "name": "Ambient low"
+      },
+      "connected": {
+        "name": "Connected"
+      }
+    }
+  }
+}
