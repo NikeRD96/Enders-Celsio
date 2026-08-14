@@ -30,16 +30,61 @@
       "battery": {
         "name": "Batterie"
       },
+      "cooking_progress": {
+        "name": "Garfortschritt"
+      },
       "rssi": {
         "name": "Signalstärke"
       }
     },
     "binary_sensor": {
+      "target_reached": {
+        "name": "Zielkerntemperatur erreicht"
+      },
+      "target_almost_reached": {
+        "name": "Zieltemperatur fast erreicht (-2°C)"
+      },
       "ambient_low": {
         "name": "Garraum Low"
       },
       "connected": {
         "name": "Verbunden"
+      }
+    },
+    "select": {
+      "meat_type": {
+        "name": "Fleischart",
+        "state": {
+          "beef_steak": "Rind (Steak / Roastbeef)",
+          "beef_roast": "Rind (Braten / Schmorstück)",
+          "pulled_beef": "Pulled Beef / Brisket",
+          "pork_chop": "Schwein (Kotelett / Filet)",
+          "pork_roast": "Schwein (Braten / Nacken)",
+          "pulled_pork": "Pulled Pork",
+          "poultry_breast": "Geflügel (Brust)",
+          "poultry_whole": "Geflügel (Ganz / Keule)",
+          "lamb": "Lamm",
+          "fish": "Fisch",
+          "burger": "Burger",
+          "custom": "Benutzerdefiniert"
+        }
+      },
+      "doneness": {
+        "name": "Garstufe",
+        "state": {
+          "rare": "Rare (Blutig)",
+          "medium_rare": "Medium Rare (Rosa)",
+          "medium": "Medium",
+          "medium_well": "Medium Well (Fast durch)",
+          "well_done": "Well Done (Durch)",
+          "pulled": "Pulled (Zerrupft / Zart)",
+          "custom": "Manuell"
+        }
+      }
+    },
+    "number": {
+      "target_temperature": {
+        "name": "Zielkerntemperatur"
       }
     }
   }

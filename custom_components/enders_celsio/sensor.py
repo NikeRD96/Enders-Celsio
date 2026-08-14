@@ -24,14 +24,13 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import EndersCelsioCoordinator
-from .parser import EndersCelsioData
 
 
 @dataclass(frozen=True, kw_only=True)
 class EndersCelsioSensorEntityDescription(SensorEntityDescription):
     """Describes an Enders Celsio sensor entity."""
 
-    value_fn: Callable[[EndersCelsioData], Any]
+    value_fn: Callable[[EndersCelsioCoordinator], Any]
 
 
 SENSOR_DESCRIPTIONS: tuple[EndersCelsioSensorEntityDescription, ...] = (
@@ -43,7 +42,7 @@ SENSOR_DESCRIPTIONS: tuple[EndersCelsioSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
         icon="mdi:thermometer",
-        value_fn=lambda data: data.meat_temperature,
+        value_fn=lambda coord: coord.data.meat_temperature if coord.data else None,
     ),
     EndersCelsioSensorEntityDescription(
         key="ambient_temperature",
@@ -53,7 +52,7 @@ SENSOR_DESCRIPTIONS: tuple[EndersCelsioSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
         icon="mdi:fire",
-        value_fn=lambda data: data.ambient_temperature,
+        value_fn=lambda coord: coord.data.ambient_temperature if coord.data else None,
     ),
     EndersCelsioSensorEntityDescription(
         key="battery",
@@ -63,7 +62,16 @@ SENSOR_DESCRIPTIONS: tuple[EndersCelsioSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
         icon="mdi:battery-bluetooth",
-        value_fn=lambda data: data.battery_level,
+        value_fn=lambda coord: coord.data.battery_level if coord.data else None,
+    ),
+    EndersCelsioSensorEntityDescription(
+        key="cooking_progress",
+        translation_key="cooking_progress",
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        icon="mdi:progress-clock",
+        value_fn=lambda coord: coord.cooking_progress,
     ),
     EndersCelsioSensorEntityDescription(
         key="rssi",
@@ -73,7 +81,7 @@ SENSOR_DESCRIPTIONS: tuple[EndersCelsioSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        value_fn=lambda data: data.rssi,
+        value_fn=lambda coord: coord.data.rssi if coord.data else None,
     ),
 )
 
@@ -114,7 +122,7 @@ class EndersCelsioSensor(CoordinatorEntity[EndersCelsioCoordinator], SensorEntit
         """Return the state of the sensor."""
         if self.coordinator.data is None:
             return None
-        return self.entity_description.value_fn(self.coordinator.data)
+        return self.entity_description.value_fn(self.coordinator)
 
     @property
     def available(self) -> bool:

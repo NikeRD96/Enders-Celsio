@@ -1,0 +1,52 @@
+blueprint:
+  name: "Enders Celsio: BBQ Garstufen- & Zieltemperatur-Benachrichtigung"
+  description: "Sendet eine Push-Benachrichtigung auf dein Smartphone, wenn das Fleisch fast fertig ist (-2°C) und wenn die gewünschte Zielkerntemperatur erreicht ist."
+  domain: automation
+  input:
+    target_reached_sensor:
+      name: "Zieltemperatur erreicht Sensor"
+      description: "Der 'Zielkerntemperatur erreicht' Sensor deines Enders Celsio Thermometers."
+      selector:
+        entity:
+          domain: binary_sensor
+          integration: enders_celsio
+    notify_device:
+      name: "Smartphone für Benachrichtigung"
+      description: "Das Gerät (Home Assistant App), welches benachrichtigt werden soll."
+      selector:
+        device:
+          integration: mobile_app
+    notify_almost_done:
+      name: "Vorwarnung bei -2°C senden?"
+      description: "Erhalte eine Vorwarnung 2°C vor Erreichen der Zieltemperatur (ideal zum Vorbereiten / Ruhenlassen)."
+      default: true
+      selector:
+        boolean:
+
+trigger:
+  - platform: state
+    entity_id: !input target_reached_sensor
+    to: "on"
+    id: "done"
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: "done"
+        sequence:
+          - domain: mobile_app
+            type: notify
+            device_id: !input notify_device
+            title: "🥩 Fleisch ist fertig!"
+            message: "Die Zielkerntemperatur wurde erreicht. Guten Appetit!"
+            data:
+              push:
+                sound:
+                  name: default
+                  critical: 1
+                  volume: 1.0
+
+mode: single

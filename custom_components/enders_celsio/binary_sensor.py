@@ -17,28 +17,39 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import EndersCelsioCoordinator
-from .parser import EndersCelsioData
 
 
 @dataclass(frozen=True, kw_only=True)
 class EndersCelsioBinarySensorEntityDescription(BinarySensorEntityDescription):
     """Describes an Enders Celsio binary sensor entity."""
 
-    is_on_fn: Callable[[EndersCelsioData], bool | None]
+    is_on_fn: Callable[[EndersCelsioCoordinator], bool | None]
 
 
 BINARY_SENSOR_DESCRIPTIONS: tuple[EndersCelsioBinarySensorEntityDescription, ...] = (
     EndersCelsioBinarySensorEntityDescription(
+        key="target_reached",
+        translation_key="target_reached",
+        icon="mdi:check-circle",
+        is_on_fn=lambda coord: coord.target_reached,
+    ),
+    EndersCelsioBinarySensorEntityDescription(
+        key="target_almost_reached",
+        translation_key="target_almost_reached",
+        icon="mdi:bell-ring-outline",
+        is_on_fn=lambda coord: coord.target_almost_reached,
+    ),
+    EndersCelsioBinarySensorEntityDescription(
         key="ambient_low",
         translation_key="ambient_low",
         icon="mdi:thermometer-low",
-        is_on_fn=lambda data: data.ambient_low,
+        is_on_fn=lambda coord: coord.data.ambient_low if coord.data else None,
     ),
     EndersCelsioBinarySensorEntityDescription(
         key="connected",
         translation_key="connected",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
-        is_on_fn=lambda data: data.connected,
+        is_on_fn=lambda coord: coord.data.connected if coord.data else None,
     ),
 )
 
@@ -79,9 +90,7 @@ class EndersCelsioBinarySensor(
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        if self.coordinator.data is None:
-            return None
-        return self.entity_description.is_on_fn(self.coordinator.data)
+        return self.entity_description.is_on_fn(self.coordinator)
 
     @property
     def available(self) -> bool:

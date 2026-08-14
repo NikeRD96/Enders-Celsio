@@ -30,16 +30,61 @@
       "battery": {
         "name": "Battery"
       },
+      "cooking_progress": {
+        "name": "Cooking progress"
+      },
       "rssi": {
         "name": "Signal strength"
       }
     },
     "binary_sensor": {
+      "target_reached": {
+        "name": "Target temperature reached"
+      },
+      "target_almost_reached": {
+        "name": "Target almost reached (-2°C)"
+      },
       "ambient_low": {
         "name": "Ambient low"
       },
       "connected": {
         "name": "Connected"
+      }
+    },
+    "select": {
+      "meat_type": {
+        "name": "Meat type",
+        "state": {
+          "beef_steak": "Beef Steak / Roastbeef",
+          "beef_roast": "Beef Roast",
+          "pulled_beef": "Pulled Beef / Brisket",
+          "pork_chop": "Pork Chop / Tenderloin",
+          "pork_roast": "Pork Roast",
+          "pulled_pork": "Pulled Pork",
+          "poultry_breast": "Poultry (Breast)",
+          "poultry_whole": "Poultry (Whole / Leg)",
+          "lamb": "Lamb",
+          "fish": "Fish",
+          "burger": "Burger",
+          "custom": "Custom"
+        }
+      },
+      "doneness": {
+        "name": "Doneness",
+        "state": {
+          "rare": "Rare",
+          "medium_rare": "Medium Rare",
+          "medium": "Medium",
+          "medium_well": "Medium Well",
+          "well_done": "Well Done",
+          "pulled": "Pulled",
+          "custom": "Custom"
+        }
+      }
+    },
+    "number": {
+      "target_temperature": {
+        "name": "Target core temperature"
       }
     }
   }

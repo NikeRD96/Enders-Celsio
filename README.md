@@ -4,7 +4,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/custom-components/ha-enders-celsio?style=flat-square)](https://github.com/custom-components/ha-enders-celsio/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Custom Component für **Home Assistant** zur nahtlosen Einbindung des kabellosen Bluetooth-Grillthermometers **Enders Celsio** (Fühler `WPprobe` und Basisstation `EN2`).
+Vollwertige Custom Integration für **Home Assistant** zur Einbindung des kabellosen Bluetooth-Grillthermometers **Enders Celsio** (Fühler `WPprobe` und Basisstation `EN2`) inklusive **digitalem Grillassistenten** (Fleischarten-Presets, Garstufen, Zieltemperatur-Regelung und Benachrichtigungen).
 
 ---
 
@@ -13,22 +13,35 @@ Custom Component für **Home Assistant** zur nahtlosen Einbindung des kabellosen
 - 📡 **Passives Bluetooth Low Energy (BLE)**: Hört direkt auf die BLE-Advertisements des Fühlers – keine aktive Kopplung nötig, kein zusätzlicher Akkuverbrauch, keine Verbindungsabbrüche.
 - 🌡️ **Fleischkerntemperatur**: Live-Messwert an der Spitze mit 0,1 °C Auflösung.
 - 🔥 **Garraum- / Ambient-Temperatur**: Messwert am Fühlerende außerhalb des Fleisches inklusive automatischer Erkennung des "Low"-Modus (< 50 °C).
+- 🍖 **Integrierter Grillassistent (Fleischart & Garstufen-Presets)**:
+  - **Fleischart (`select`)**: Rind (Steak, Braten, Pulled Beef/Brisket), Schwein (Kotelett, Braten, Pulled Pork), Geflügel (Brust, Ganz), Lamm, Fisch, Burger oder Benutzerdefiniert.
+  - **Garstufe (`select`)**: Rare, Medium Rare, Medium, Medium Well, Well Done, Pulled.
+  - **Zielkerntemperatur (`number`)**: Passt sich automatisch dem gewählten Preset an und kann jederzeit gradgenau manuell verstellt werden.
+- 🎯 **Zieltemperatur-Erkennung**:
+  - `binary_sensor.<device>_target_reached`: `on`, sobald die Zielkerntemperatur erreicht ist.
+  - `binary_sensor.<device>_target_almost_reached`: `on`, 2 °C vor der Zieltemperatur (ideal zum Vorbereiten oder Ruhenlassen).
+  - `sensor.<device>_cooking_progress`: Garfortschritt in Prozent (0–100 %).
 - 🔋 **Batteriezustand**: Überwachung des Fühlerakkus in Prozent.
 - 📶 **Signalstärke (RSSI)**: Zur Diagnose der Bluetooth-Verbindung.
 - 🚀 **Bluetooth Auto-Discovery**: Home Assistant erkennt eingeschaltete Enders Celsio Fühler und Basisstationen automatisch.
-- 🌐 **ESPHome Bluetooth Proxy kompatibel**: Funktioniert sowohl mit dem internen Bluetooth-Empfänger von Home Assistant als auch mit jedem ESPHome BLE-Proxy im Netzwerk.
 
 ---
 
-## 📊 Entitäten
+## 📊 Übersicht aller Entitäten
 
-| Entität | Typ | Beschreibung |
+| Entität | Domain | Beschreibung |
 |---|---|---|
-| `sensor.<device>_meat_temperature` | Sensor (`°C`) | Fleischkerntemperatur an der Spitze |
-| `sensor.<device>_ambient_temperature` | Sensor (`°C`) | Garraum-/Grilltemperatur am Ende |
-| `sensor.<device>_battery` | Sensor (`%`) | Batteriestand des Fühlers |
-| `sensor.<device>_rssi` | Sensor (`dBm`) | Bluetooth-Signalstärke (Diagnose) |
-| `binary_sensor.<device>_ambient_low` | Binary Sensor | `on`, wenn Garraumtemperatur < 50 °C |
+| `sensor.<device>_meat_temperature` | Sensor (`°C`) | Aktuelle Fleischkerntemperatur |
+| `sensor.<device>_ambient_temperature` | Sensor (`°C`) | Aktuelle Garraumtemperatur |
+| `sensor.<device>_battery` | Sensor (`%`) | Batterieladezustand des Fühlers |
+| `sensor.<device>_cooking_progress` | Sensor (`%`) | Garfortschritt von Start- bis Zieltemperatur |
+| `sensor.<device>_rssi` | Sensor (`dBm`) | Bluetooth-Signalstärke |
+| `select.<device>_meat_type` | Select | Auswahl der Fleischart (Rind, Schwein, Geflügel, etc.) |
+| `select.<device>_doneness` | Select | Auswahl der Garstufe (Rare, Medium, Well Done, etc.) |
+| `number.<device>_target_temperature` | Number (`°C`) | Einstellbare Zielkerntemperatur (40–100 °C) |
+| `binary_sensor.<device>_target_reached` | Binary Sensor | `on`, wenn Fleisch fertig gegart ist |
+| `binary_sensor.<device>_target_almost_reached` | Binary Sensor | `on`, 2 °C vor Zieltemperatur |
+| `binary_sensor.<device>_ambient_low` | Binary Sensor | `on`, wenn Garraumtemperatur < 50 °C ist |
 | `binary_sensor.<device>_connected` | Binary Sensor | `on`, wenn Daten empfangen werden |
 
 ---
@@ -44,28 +57,19 @@ Custom Component für **Home Assistant** zur nahtlosen Einbindung des kabellosen
 
 ### Methode 2: Manuelle Installation
 
-1. Lade das Repository herunter.
-2. Kopiere den Ordner `custom_components/enders_celsio` in dein Home Assistant Konfigurationsverzeichnis (`/config/custom_components/enders_celsio`).
-3. Starte Home Assistant neu.
+1. Kopiere den Ordner `custom_components/enders_celsio` in dein Home Assistant Konfigurationsverzeichnis (`/config/custom_components/enders_celsio`).
+2. Starte Home Assistant neu.
 
 ---
 
-## ⚙️ Einrichtung
-
-1. Schalte das Enders Celsio Thermometer ein (aus der Ladeschale nehmen).
-2. Gehe in Home Assistant auf **Einstellungen** $\rightarrow$ **Geräte & Dienste**.
-3. Das Gerät wird automatisch als neues Bluetooth-Gerät vorgeschlagen. Klicke einfach auf **Konfigurieren**.
-4. *(Optional)* Falls nicht automatisch gefunden: Klicke auf **Integration hinzufügen**, suche nach **Enders Celsio** und wähle die MAC-Adresse deines Geräts aus.
-
----
-
-## 📱 Dashboard-Beispiel (Lovelace)
+## 📱 Dashboard-Beispiel (Lovelace BBQ Cockpit)
 
 ```yaml
 type: vertical-stack
 cards:
   - type: custom:mushroom-title-card
-    title: 🥩 Enders Celsio BBQ
+    title: 🥩 Enders Celsio BBQ Cockpit
+    subtitle: Grillassistent & Temperaturüberwachung
   - type: horizontal-stack
     cards:
       - type: gauge
@@ -89,28 +93,39 @@ cards:
           yellow: 160
           red: 220
   - type: entities
+    title: 🎯 Grillassistent Einstellungen
     entities:
+      - entity: select.enders_probe_meat_type
+      - entity: select.enders_probe_doneness
+      - entity: number.enders_probe_target_temperature
+      - entity: sensor.enders_probe_cooking_progress
+      - entity: binary_sensor.enders_probe_target_reached
+      - entity: binary_sensor.enders_probe_target_almost_reached
       - entity: sensor.enders_probe_battery
-      - entity: binary_sensor.enders_probe_ambient_low
-      - entity: sensor.enders_probe_rssi
 ```
 
 ---
 
-## 🔔 Automations-Beispiel (Garstufen-Alarm)
+## 🔔 Automations-Beispiel (Smartphone Push mit Ton)
 
 ```yaml
-alias: "BBQ: Steak Kerntemperatur erreicht"
-description: "Sendet eine Benachrichtigung, sobald die Kerntemperatur 56°C (Medium) erreicht."
+alias: "BBQ: Steak ist fertig!"
+description: "Sendet eine Benachrichtigung auf das Smartphone, sobald die gewählte Garstufe erreicht ist."
 trigger:
-  - platform: numeric_state
-    entity_id: sensor.enders_probe_meat_temperature
-    above: 55.9
+  - platform: state
+    entity_id: binary_sensor.enders_probe_target_reached
+    to: "on"
 action:
-  - service: notify.persistent_notification
+  - action: notify.notify
     data:
-      title: "🥩 Fleisch ist fertig!"
-      message: "Die Kerntemperatur hat {{ states('sensor.enders_probe_meat_temperature') }} °C erreicht."
+      title: "🥩 Fleisch ist fertig gegart!"
+      message: "Die Zielkerntemperatur ({{ states('number.enders_probe_target_temperature') }} °C) wurde erreicht. Guten Appetit!"
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1.0
 mode: single
 ```
 

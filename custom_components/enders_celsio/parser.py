@@ -43,7 +43,20 @@ class EndersCelsioData:
 
 
 def parse_raw_payload(payload: bytes, address: str = "", name: str = "", rssi: int | None = None) -> EndersCelsioData | None:
-    """Parse raw manufacturer bytes from an Enders Celsio probe or base station."""
+    """Parse raw manufacturer bytes from an Enders Celsio probe or base station.
+
+    Supports:
+    - 15-byte full manufacturer data starting with 6-byte reverse MAC:
+      [0..5]: MAC reverse
+      [6]: Probe ID
+      [7]: Mode/Status
+      [8..9]: Meat temp (Big-Endian uint16 / 10.0)
+      [10]: Battery percentage
+      [11]: Device subtype (0x1F)
+      [12..13]: Ambient temp (0x8000 = Low, else raw ADC)
+      [14]: Extra status / checksum
+    - 13-byte manufacturer data (when first 2 bytes were split by Bleak as company ID)
+    """
     if not payload:
         return None
 
@@ -63,18 +76,23 @@ def parse_raw_payload(payload: bytes, address: str = "", name: str = "", rssi: i
     else:
         return None
 
-    # Fleischkerntemperatur (0.1°C)
+    # Calculate Meat Core Temperature (0.1°C resolution)
     meat_temp = round(raw_meat / 10.0, 1)
 
-    # Ambient / Garraumtemperatur
+    # Calculate Ambient Temperature
+    # 0x8000 means Ambient is Low (< 50°C)
     if raw_ambient == 0x8000:
         ambient_temp = None
         ambient_low = True
     else:
         ambient_low = False
+        # Calibrated formula based on empirical probe sensor points
+        # (836 -> 113.0°C, 972 -> 126.0°C)
         ambient_temp = round(0.095588 * raw_ambient + 33.088, 1)
 
+    # Battery percentage bounds
     battery_level = battery if 0 <= battery <= 100 else None
+
     device_name = name or (f"Enders Probe {address[-5:].replace(':', '')}" if address else "Enders Probe")
 
     return EndersCelsioData(
@@ -101,12 +119,14 @@ def parse_service_info(service_info: Any) -> EndersCelsioData | None:
     rssi = getattr(service_info, "rssi", None)
     mfr_data = getattr(service_info, "manufacturer_data", {})
 
+    # Check manufacturer data entries
     if isinstance(mfr_data, dict):
         for company_id, data in mfr_data.items():
             if not isinstance(data, (bytes, bytearray)):
                 continue
 
             raw_bytes = bytes(data)
+            # Bleak splits the first 2 bytes as company ID (e.g. 0x35FA)
             if len(raw_bytes) == 13:
                 try:
                     comp_bytes = int(company_id).to_bytes(2, byteorder="little")
@@ -117,10 +137,12 @@ def parse_service_info(service_info: Any) -> EndersCelsioData | None:
                 except Exception:
                     pass
 
+            # Direct 15-byte or raw parse
             result = parse_raw_payload(raw_bytes, address=address, name=name, rssi=rssi)
             if result:
                 return result
 
+    # Check if this is explicitly the base station (EN2)
     if name.startswith(NAME_BASE_PREFIX):
         return EndersCelsioData(
             address=address,
