@@ -119,4 +119,4 @@ class EndersCelsioSensor(CoordinatorEntity[EndersCelsioCoordinator], SensorEntit
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
-        return super().available and self.coordinator.data is not None
+        return self.coordinator.data is not None
