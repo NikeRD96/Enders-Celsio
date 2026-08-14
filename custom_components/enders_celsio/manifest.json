@@ -3,6 +3,7 @@
   "name": "Enders Celsio",
   "codeowners": [],
   "config_flow": true,
+  "dependencies": ["bluetooth"],
   "documentation": "https://github.com/custom-components/ha-enders-celsio",
   "integration_type": "device",
   "iot_class": "local_push",

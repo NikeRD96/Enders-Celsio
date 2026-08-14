@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import Any
 
 from homeassistant.components.bluetooth import (
     BluetoothScanningMode,
@@ -11,11 +11,10 @@ from homeassistant.components.bluetooth import (
 from homeassistant.components.bluetooth.passive_update_coordinator import (
     PassiveBluetoothDataUpdateCoordinator,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import CONNECTION_BLUETOOTH, DeviceInfo
 
 from .const import (
-    DEFAULT_DISCONNECT_TIMEOUT,
     DEVICE_TYPE_BASE_STATION,
     DEVICE_TYPE_PROBE,
     DOMAIN,
@@ -42,11 +41,11 @@ class EndersCelsioCoordinator(PassiveBluetoothDataUpdateCoordinator[EndersCelsio
             address=address,
             mode=mode,
             connectable=False,
-            poll_interval=None,
         )
         self.address = address
         self.device_data: EndersCelsioData | None = None
 
+    @callback
     def _async_handle_bluetooth_event(
         self,
         service_info: BluetoothServiceInfoBleak,
@@ -61,7 +60,11 @@ class EndersCelsioCoordinator(PassiveBluetoothDataUpdateCoordinator[EndersCelsio
     @property
     def device_info(self) -> DeviceInfo:
         """Return device information for Home Assistant device registry."""
-        name = self.device_data.name if self.device_data else f"Enders Celsio {self.address[-5:].replace(':', '')}"
+        name = (
+            self.device_data.name
+            if self.device_data
+            else f"Enders Celsio {self.address[-5:].replace(':', '')}"
+        )
         model = "Celsio Wireless Meat Probe"
         if self.device_data and self.device_data.device_type == DEVICE_TYPE_BASE_STATION:
             model = "Celsio Base Station"

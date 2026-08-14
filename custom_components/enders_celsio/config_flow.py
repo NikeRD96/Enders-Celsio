@@ -27,7 +27,7 @@ from .parser import parse_service_info
 _LOGGER = logging.getLogger(__name__)
 
 
-class EndersCelsioConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Enders Celsio."""
 
     VERSION = 1
