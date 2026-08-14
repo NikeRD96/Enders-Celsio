@@ -24,7 +24,7 @@ from .parser import EndersCelsioData, parse_service_info
 _LOGGER = logging.getLogger(__name__)
 
 
-class EndersCelsioCoordinator(PassiveBluetoothDataUpdateCoordinator[EndersCelsioData]):
+class EndersCelsioCoordinator(PassiveBluetoothDataUpdateCoordinator):
     """Coordinator for Enders Celsio Bluetooth devices."""
 
     def __init__(
