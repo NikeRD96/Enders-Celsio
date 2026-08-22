@@ -1,0 +1,64 @@
+name: 🐛 Bug Report
+description: Report an issue or bug with the Enders Celsio integration
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please provide as much detail as possible to help reproduce and resolve it.
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant Version
+      description: e.g. 2024.8.0
+      placeholder: 2024.x.x
+    validations:
+      required: true
+
+  - type: input
+    id: integration_version
+    attributes:
+      label: Enders Celsio Integration Version
+      description: e.g. 1.0.0
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device_type
+    attributes:
+      label: Device Type
+      options:
+        - Enders Celsio Probe (WPprobe)
+        - Enders Celsio Base Station (EN2)
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce the behavior?
+      placeholder: |
+        1. Open Home Assistant
+        2. ...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs & Raw BLE Data
+      description: Paste any Home Assistant logs or debug output here.
+      render: text

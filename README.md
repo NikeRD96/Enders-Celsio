@@ -1,10 +1,19 @@
 # Enders Celsio Home Assistant Integration
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![GitHub release](https://img.shields.io/github/v/release/custom-components/ha-enders-celsio?style=flat-square)](https://github.com/custom-components/ha-enders-celsio/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Validate](https://github.com/NikeRD96/Enders-Celsio/actions/workflows/validate.yml/badge.svg)](https://github.com/NikeRD96/Enders-Celsio/actions/workflows/validate.yml)
+[![GitHub release](https://img.shields.io/github/v/release/NikeRD96/Enders-Celsio?style=flat-square)](https://github.com/NikeRD96/Enders-Celsio/releases)
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)](https://github.com/hacs/integration)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
 Vollwertige Custom Integration für **Home Assistant** zur Einbindung des kabellosen Bluetooth-Grillthermometers **Enders Celsio** (Fühler `WPprobe` und Basisstation `EN2`) inklusive **digitalem Grillassistenten** (Fleischarten-Presets, Garstufen, Zieltemperatur-Regelung und Benachrichtigungen).
+
+---
+
+## 🚀 1-Klick Installation via HACS
+
+Klicke auf den folgenden Button, um das Repository direkt in deiner Home Assistant Installation als benutzerdefiniertes HACS-Repository zu öffnen:
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=NikeRD96&repository=Enders-Celsio&category=integration)
 
 ---
 
@@ -52,13 +61,29 @@ Vollwertige Custom Integration für **Home Assistant** zur Einbindung des kabell
 
 1. Öffne **HACS** in Home Assistant.
 2. Gehe auf **Integrationen** und klicke oben rechts auf das Drei-Punkte-Menü $\rightarrow$ **Benutzerdefinierte Repositories**.
-3. Füge die URL dieses Repositories ein und wähle als Kategorie **Integration**.
-4. Klicke auf **Installieren** und starte Home Assistant neu.
+3. Füge folgende URL ein:
+   ```text
+   https://github.com/NikeRD96/Enders-Celsio
+   ```
+4. Wähle als Kategorie **Integration**.
+5. Klicke auf **Hinzufügen**, suche nach **Enders Celsio**, installiere die Integration und starte Home Assistant neu.
 
 ### Methode 2: Manuelle Installation
 
-1. Kopiere den Ordner `custom_components/enders_celsio` in dein Home Assistant Konfigurationsverzeichnis (`/config/custom_components/enders_celsio`).
-2. Starte Home Assistant neu.
+1. Lade das neueste Release `enders_celsio.zip` von der [Releases-Seite](https://github.com/NikeRD96/Enders-Celsio/releases) herunter.
+2. Entpacke das Archiv und kopiere den Ordner `enders_celsio` in dein Home Assistant Verzeichnis:
+   ```text
+   /config/custom_components/enders_celsio
+   ```
+3. Starte Home Assistant neu.
+
+---
+
+## ⚙️ Konfiguration
+
+1. Sobald dein Enders Celsio Fühler eingeschaltet ist, erscheint er in Home Assistant automatisch unter **Einstellungen** $\rightarrow$ **Geräte & Dienste** via Bluetooth-Discovery.
+2. Klicke auf **Konfigurieren** und bestätige das Hinzufügen.
+3. Alternativ kannst du die Integration auch manuell hinzufügen: **Integration hinzufügen** $\rightarrow$ **Enders Celsio** auswählen.
 
 ---
 

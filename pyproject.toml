@@ -8,8 +8,8 @@ version = "1.0.0"
 description = "Home Assistant custom integration for Enders Celsio Bluetooth meat thermometers"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Home Assistant Contributors" }]
-keywords = ["home-assistant", "bluetooth", "ble", "thermometer", "enders-celsio", "bbq"]
+authors = [{ name = "NikeRD96" }]
+keywords = ["home-assistant", "bluetooth", "ble", "thermometer", "enders-celsio", "bbq", "smart-home", "hacs"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -20,6 +20,12 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Home Automation",
 ]
+
+[project.urls]
+Homepage = "https://github.com/NikeRD96/Enders-Celsio"
+Repository = "https://github.com/NikeRD96/Enders-Celsio"
+Issues = "https://github.com/NikeRD96/Enders-Celsio/issues"
+Documentation = "https://github.com/NikeRD96/Enders-Celsio#readme"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
